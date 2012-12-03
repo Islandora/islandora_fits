@@ -1,0 +1,8 @@
+name = Islandora FITS
+description = "View and manage FITS datastreams"
+package = Islandora Utilities
+version = 7.x-dev
+core = 7.x
+#configure = admin/islandora/configure
+files[] = includes/islandora_fits.process.inc
+php = 5.3
