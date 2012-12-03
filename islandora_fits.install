@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_install().
+ */
+function islandora_fits_install() {
+  // make sure to test for exiftool
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function islandora_fits_uninstall() {
+
+}
