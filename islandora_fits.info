@@ -1,6 +1,6 @@
 name = Islandora FITS
 description = "View and manage FITS datastreams"
-package = Islandora Utilities
+package = Islandora Tools
 version = 7.x-dev
 core = 7.x
 #configure = admin/islandora/configure
