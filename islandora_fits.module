@@ -5,6 +5,22 @@
  */
 
 /**
+ * Implements hook_menu().
+ */
+function islandora_fits_menu() {
+  return array(
+    'admin/islandora/fits' => array(
+      'title' => 'Fits Tool',
+      'description' => 'Configure the Islandora Fits extractor.',
+      'page callback' => 'drupal_get_form',
+      'access arguments' => array('administer site configuration'),
+      'page arguments' => array('islandora_fits_admin'),
+      'file' => 'admin/islandora_fits.admin.inc',
+      'type' => MENU_NORMAL_ITEM,
+    )
+  );
+}
+/**
  * Implements hook_islandora_ingest_post_ingest().
  *
  * Create technical metadata (specifically FITS) datastreams for the input object.
