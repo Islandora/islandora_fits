@@ -9,7 +9,7 @@ function islandora_fits_admin() {
     '#type' => 'textfield',
     '#title' => t('System path to fits.sh script?'),
     '#description' => t('Enter the location (on the system) of the fits.sh script.'),
-    '#default_value' => variable_get('islandora_fits_executable_path', TRUE),
+    '#default_value' => variable_get('islandora_fits_executable_path'),
   );
 
   $form['buttons']['submit'] = array('#type' => 'submit', '#value' => t('Save Configuration'));
