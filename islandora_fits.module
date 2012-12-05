@@ -14,7 +14,7 @@ function islandora_fits_menu() {
       'description' => 'Configure the Islandora Fits extractor.',
       'page callback' => 'drupal_get_form',
       'access arguments' => array('administer site configuration'),
-      'page arguments' => array('islandora_fits_admin'),
+      'page arguments' => array('islandora_fits_admin_form'),
       'file' => 'admin/islandora_fits.admin.inc',
       'type' => MENU_NORMAL_ITEM,
     )
