@@ -27,7 +27,9 @@ function islandora_fits_create_techmd(FedoraObject $object) {
     islandora_fits_add_datastream($object, 'TECHMD', $fits_uri);
   }
 
+  drupal_unlink($fits_uri);
   file_unmanaged_delete($file_uri);
+
   return TRUE;
 }
 
@@ -43,11 +45,12 @@ function islandora_fits_create_techmd(FedoraObject $object) {
 function islandora_fits_create_fits($file_uri) {
   $output = array();
   $file = drupal_realpath($file_uri);
+  $outfile = $file . ".tech.xml";
   // compose fits command
-  $command = variable_get("islandora_fits_executable_path") . " -i " . $file_uri . " -xc -o " . $file_uri . ".tech.xml";
+  $command = variable_get("islandora_fits_executable_path") . " -i " . $file . " -xc -o " . $outfile;
   exec($command, $output, $ret);
   if ($ret == "0") {
-    return $output;
+    return $outfile;
   }
   return FALSE;
 }
