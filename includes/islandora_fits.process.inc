@@ -44,7 +44,7 @@ function islandora_fits_create_fits($file_uri) {
   $output = array();
   $file = drupal_realpath($file_uri);
   // compose fits command
-  $command = variable_get("islandora_fits_executable_path");
+  $command = variable_get("islandora_fits_executable_path") . " -i " . $file_uri . " -xc -o " . $file_uri . ".tech.xml";
   exec($command, $output, $ret);
   if ($ret == "0") {
     return $output;
