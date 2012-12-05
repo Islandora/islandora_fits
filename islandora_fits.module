@@ -26,7 +26,7 @@ function islandora_fits_menu() {
  *
  * Create technical metadata (specifically FITS) datastreams for the input object.
  */
-function islandora_fits_islandora_ingest_post_ingest($object) {
+function islandora_fits_islandora_ingest_post_ingest(FedoraObject $object) {
   module_load_include('inc', 'islandora_fits', 'includes/islandora_fits.process');
-  islandora_pdf_create_all_derivatives($object);
+  islandora_fits_create_techmd($object);
 }
