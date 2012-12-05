@@ -13,6 +13,7 @@ function islandora_fits_admin_form() {
   );
 
   $form['buttons']['submit'] = array('#type' => 'submit', '#value' => t('Save Configuration'));
+  $form['#submit'][] = 'islandora_fits_admin_submit_form';
 
   return $form;
 }
@@ -20,15 +21,10 @@ function islandora_fits_admin_form() {
 function islandora_fits_admin_submit_form($form, &$form_state) {
 
   foreach ($form_state['values'] as $key => $value) {
-    if ($op == t('Reset to defaults')) {
-      variable_del($key);
+    if (is_array($value) && isset($form_state['values']['array_filter'])) {
+      $value = array_keys(array_filter($value));
     }
-    else {
-      if (is_array($value) && isset($form_state['values']['array_filter'])) {
-        $value = array_keys(array_filter($value));
-      }
-      variable_set($key, $value);
-    }
+    variable_set($key, $value);
   }
 
 }
