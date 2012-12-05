@@ -27,7 +27,7 @@ function islandora_fits_create_techmd(FedoraObject $object) {
     islandora_fits_add_datastream($object, 'TECHMD', $fits_uri);
   }
 
-  file_unmanaged_delete($file_uri); //?
+  file_unmanaged_delete($file_uri);
   return TRUE;
 }
 
