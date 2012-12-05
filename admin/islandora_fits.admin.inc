@@ -11,4 +11,8 @@ function islandora_fits_admin() {
     '#description' => t('Enter the location (on the system) of the fits.sh script.'),
     '#default_value' => variable_get('islandora_fits_executable_path', TRUE),
   );
+
+  $form['buttons']['submit'] = array('#type' => 'submit', '#value' => t('Save Configuration'));
+
+  return $form;
 }
