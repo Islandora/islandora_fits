@@ -55,6 +55,12 @@ function islandora_fits_create_fits($file_uri) {
   if ($ret == "0") {
     return $outfile;
   }
+  // if it failed, lets try a simpler command (-x instead of -xc)
+  $command = variable_get("islandora_fits_executable_path") . " -i " . $file . " -x -o " . $outfile;
+  exec($command, $output, $ret);
+  if ($ret == "0") {
+    return $outfile;
+  }
   return FALSE;
 }
 
