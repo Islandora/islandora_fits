@@ -8,10 +8,10 @@
  * Creates all technical metadata derivatives as datastreams for given object.
  *
  * @param FedoraObject $object
- * The object that will be used to generate/store the derivatives.
+ *   The object that will be used to generate/store the derivatives.
  *
  * @return boolean
- * TRUE if successful, FALSE otherwise.
+ *   TRUE if the techmd datastream was created, FALSE otherwise.
  */
 function islandora_fits_create_techmd(FedoraObject $object) {
   if (!isset($object["OBJ"])) {
@@ -24,23 +24,26 @@ function islandora_fits_create_techmd(FedoraObject $object) {
   $file_uri = file_unmanaged_save_data($object['OBJ']->content, "temporary://{$file_name}.OBJ.{$ext}");
 
   if (($fits_uri = islandora_fits_create_fits($file_uri)) !== FALSE) {
-    islandora_fits_add_datastream($object, 'TECHMD', $fits_uri);
+    islandora_fits_add_datastream($object, variable_get('islandora_fits_techmd_dsid', 'TECHMD'), $fits_uri);
+    drupal_unlink($fits_uri);
   }
 
-  drupal_unlink($fits_uri);
+  // add any more processors here - there probably won't be any
+
   file_unmanaged_delete($file_uri);
 
-  return TRUE;
+  // if fits_uri resolved, then we succeeded, otherwise we failed
+  return ($fits_uri !== FALSE);
 }
 
 /**
  * Creates the technical metadata derivative from the given file.
  *
  * @param string $file_uri
- * The URI to the file from which the derivative will be generated.
+ *   The URI to the file from which the derivative will be generated.
  *
  * @return string
- * A URI to the generated derivative if successful, FALSE otherwise.
+ *   A URI to the generated derivative if successful, FALSE otherwise.
  */
 function islandora_fits_create_fits($file_uri) {
   $output = array();
@@ -59,11 +62,11 @@ function islandora_fits_create_fits($file_uri) {
  * Adds the given file as a datastream to the given object using the given datastream id to identify it.
  *
  * @param FedoraObject $object
- * The object to add the datasteam to.
+ *  The object to add the datasteam to.
  * @param string $datastream_id
- * The datastream id of the added datastream.
+ *   The datastream id of the added datastream.
  * @param string $file_uri
- * A URI to the file containing the content for the datastream.
+ *   A URI to the file containing the content for the datastream.
  */
 function islandora_fits_add_datastream($object, $datastream_id, $file_uri) {
   try {
