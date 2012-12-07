@@ -18,26 +18,37 @@ function islandora_fits_create_techmd(FedoraObject $object) {
     drupal_set_message(t("No OBJ datastream present for object @s - "
     . "technical metadata extraction was skipped.",
     array("@s" => $object->id), "error"));
+
+    // Report to watchdog as well.
+    watchdog("islandora_fits", t("No OBJ datastream present for object @s - "
+    . "technical metadata extraction was skipped.",
+    array("@s" => $object->id), "error"));
+
     return FALSE;
   }
   $mime_detect = new MimeDetect();
   $ext = $mime_detect->getExtension($object['OBJ']->mimeType);
   $file_name = str_replace(":", "-", $object->id);
-  $file_uri = file_unmanaged_save_data($object['OBJ']->content,
-                                       "temporary://{$file_name}.OBJ.{$ext}");
+  $out_file = drupal_realpath("temporary://{$file_name}.OBJ.{$ext}");
+  $object['OBJ']->getContent($out_file);
 
-  if (($fits_uri = islandora_fits_create_fits($file_uri)) !== FALSE) {
+  $fits_file = islandora_fits_create_fits($out_file);
+  if ($fits_file === FALSE) {
+    watchdog("islandora_fits",
+             t("Failed to create technical metadata with fits script."));
+  }
+  else {
     islandora_fits_add_datastream($object,
-      variable_get('islandora_fits_techmd_dsid', 'TECHMD'), $fits_uri);
-    drupal_unlink($fits_uri);
+      variable_get('islandora_fits_techmd_dsid', 'TECHMD'), $fits_file);
+    drupal_unlink($fits_file); // just in case
   }
 
   // add any more processors here - there probably won't be any
 
-  file_unmanaged_delete($file_uri);
+  drupal_unlink($out_file);
 
-  // if fits_uri resolved, then we succeeded, otherwise we failed
-  return ($fits_uri !== FALSE);
+  // If fits_file resolved then we succeeded, otherwise we failed.
+  return ($fits_file !== FALSE);
 }
 
 /**
@@ -49,20 +60,19 @@ function islandora_fits_create_techmd(FedoraObject $object) {
  * @return string
  *   A URI to the generated derivative if successful, FALSE otherwise.
  */
-function islandora_fits_create_fits($file_uri) {
+function islandora_fits_create_fits($file) {
   $output = array();
-  $file = drupal_realpath($file_uri);
   $outfile = $file . ".tech.xml";
   // compose fits command
-  $command = variable_get("islandora_fits_executable_path") . " -i " . $file
-    . " -xc -o " . $outfile;
+  $command = variable_get("islandora_fits_executable_path", "fits.sh") . " -i "
+    . $file . " -xc -o " . $outfile;
   exec($command, $output, $ret);
   if ($ret == "0") {
     return $outfile;
   }
   // if it failed, lets try a simpler command (-x instead of -xc)
-  $command = variable_get("islandora_fits_executable_path") . " -i " . $file
-    . " -x -o " . $outfile;
+  $command = variable_get("islandora_fits_executable_path", "fits.sh") . " -i "
+    . $file . " -x -o " . $outfile;
   exec($command, $output, $ret);
   if ($ret == "0") {
     return $outfile;
