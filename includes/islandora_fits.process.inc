@@ -15,16 +15,20 @@
  */
 function islandora_fits_create_techmd(FedoraObject $object) {
   if (!isset($object["OBJ"])) {
-    drupal_set_message(t("Could not create technical derivatives for %s. No file was uploaded.", array("%s" => $object->id), "error"));
+    drupal_set_message(t("No OBJ datastream present for object @s - "
+    . "technical metadata extraction was skipped.",
+    array("@s" => $object->id), "error"));
     return FALSE;
   }
   $mime_detect = new MimeDetect();
   $ext = $mime_detect->getExtension($object['OBJ']->mimeType);
   $file_name = str_replace(":", "-", $object->id);
-  $file_uri = file_unmanaged_save_data($object['OBJ']->content, "temporary://{$file_name}.OBJ.{$ext}");
+  $file_uri = file_unmanaged_save_data($object['OBJ']->content,
+                                       "temporary://{$file_name}.OBJ.{$ext}");
 
   if (($fits_uri = islandora_fits_create_fits($file_uri)) !== FALSE) {
-    islandora_fits_add_datastream($object, variable_get('islandora_fits_techmd_dsid', 'TECHMD'), $fits_uri);
+    islandora_fits_add_datastream($object,
+      variable_get('islandora_fits_techmd_dsid', 'TECHMD'), $fits_uri);
     drupal_unlink($fits_uri);
   }
 
@@ -50,13 +54,15 @@ function islandora_fits_create_fits($file_uri) {
   $file = drupal_realpath($file_uri);
   $outfile = $file . ".tech.xml";
   // compose fits command
-  $command = variable_get("islandora_fits_executable_path") . " -i " . $file . " -xc -o " . $outfile;
+  $command = variable_get("islandora_fits_executable_path") . " -i " . $file
+    . " -xc -o " . $outfile;
   exec($command, $output, $ret);
   if ($ret == "0") {
     return $outfile;
   }
   // if it failed, lets try a simpler command (-x instead of -xc)
-  $command = variable_get("islandora_fits_executable_path") . " -i " . $file . " -x -o " . $outfile;
+  $command = variable_get("islandora_fits_executable_path") . " -i " . $file
+    . " -x -o " . $outfile;
   exec($command, $output, $ret);
   if ($ret == "0") {
     return $outfile;
@@ -65,7 +71,8 @@ function islandora_fits_create_fits($file_uri) {
 }
 
 /**
- * Adds the given file as a datastream to the given object using the given datastream id to identify it.
+ * Adds the given file as a datastream to the given object using the given
+ * datastream id to identify it.
  *
  * @param FedoraObject $object
  *  The object to add the datasteam to.
