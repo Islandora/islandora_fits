@@ -3,6 +3,16 @@
 A simple module to extend islandora solution pack install processes by adding
 technical metadata extraction via the File Information Tool Set (FITS).
 
+Behind the scenes, the module tries to get as much metadata from your file by
+running:
+>fits.sh -i *infile* -xc -o *outfile*
+
+The -xc command can sometimes cause problems, so if that fails, the module tries
+>fits.sh -i *infile* -x -o *outfile*
+
+Should that fail, technical metadata extraction is aborted and the error is
+logged in the watchdog.
+
 #### REQUIREMENTS
 
 The File Information Tool Set (http://code.google.com/p/fits/).
