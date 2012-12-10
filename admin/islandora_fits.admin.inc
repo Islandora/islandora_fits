@@ -9,7 +9,7 @@ function islandora_fits_admin_form() {
     '#type' => 'textfield',
     '#title' => t('System path to fits processor'),
     '#description' => t('Enter the location and filename (on the system) of the fits processing script.  Include the filename, not just the path.'),
-    '#default_value' => variable_get('islandora_fits_executable_path'),
+    '#default_value' => variable_get('islandora_fits_executable_path', 'fits.sh'),
   );
 
   // add form options for what the datastream is called
