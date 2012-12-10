@@ -15,11 +15,7 @@
  */
 function islandora_fits_create_techmd(FedoraObject $object) {
   if (!isset($object["OBJ"])) {
-    drupal_set_message(t("No OBJ datastream present for object @s - "
-    . "technical metadata extraction was skipped.",
-    array("@s" => $object->id), "error"));
-
-    // Report to watchdog as well.
+    // Report error to watchdog.
     watchdog("islandora_fits", t("No OBJ datastream present for object @s - "
     . "technical metadata extraction was skipped.",
     array("@s" => $object->id), "error"));
