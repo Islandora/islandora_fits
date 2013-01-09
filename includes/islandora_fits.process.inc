@@ -15,11 +15,9 @@
  */
 function islandora_fits_create_techmd(FedoraObject $object) {
   if (!isset($object["OBJ"])) {
-    // Report error to watchdog.
-    watchdog("islandora_fits", t("No OBJ datastream present for object @s - "
-    . "technical metadata extraction was skipped.",
-    array("@s" => $object->id), "error"));
-
+    $message = 'No OBJ datastream present for object @pid - technical metadata extraction was skipped.';
+    $vars = array('@pid' => $object->id);
+    watchdog('islandora_fits', $message, $vars, 'error');
     return FALSE;
   }
   $mime_detect = new MimeDetect();
