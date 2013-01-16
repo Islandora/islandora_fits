@@ -47,7 +47,7 @@ function islandora_fits_theme() {
   return array(
     'islandora_fits_metadata_display' => array(
       'template' => 'theme/islandora_fits_metadata',
-      'variables' => array('islandora_object' => NULL),
+      'variables' => array('islandora_object' => NULL, 'islandora_fits_table' => NULL),
     )
   );
 }
@@ -91,12 +91,12 @@ function template_preprocess_islandora_fits_metadata_display(array &$variables) 
     foreach ($value as $data) {
       if (!array_key_exists($key, $rows)) {
         $rows[$key] = array(
-          'label' => $key,
-          'value' => $data
+          'label' => check_plain($key),
+          'value' => check_plain($data)
         );
       }
       else {
-        $rows[$key]['data'] = $rows[$key]['data'] . '<br>' . $data;
+        $rows[$key]['data'] = $rows[$key]['data'] . '<br />' . $data;
       }
     }
   }
@@ -170,7 +170,7 @@ function islandora_fits_children($child, &$output) {
 
           // Need to check if the label already exists in our output
           // such that we do not duplicate entries.
-         if (!array_key_exists($label, $output)) {
+          if (!array_key_exists($label, $output)) {
             $output[$label][] = $output_text;
           }
           else {
