@@ -8,8 +8,8 @@
  * Implements hook_menu().
  */
 function islandora_fits_menu() {
-  return array(
-    'admin/islandora/fits' => array(
+  $items = array();
+  $items['admin/islandora/fits'] = array(
       'title' => 'Fits Tool',
       'description' => 'Configure the Islandora Fits extractor.',
       'page callback' => 'drupal_get_form',
@@ -17,10 +17,34 @@ function islandora_fits_menu() {
       'page arguments' => array('islandora_fits_admin_form'),
       'file' => 'admin/islandora_fits.admin.inc',
       'type' => MENU_NORMAL_ITEM,
+  );
+  $items['islandora/object/%islandora_object/manage/fits_metadata'] = array(
+    'title' => 'Technical Metadata',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'islandora_fits_metadata_form',
+    'page arguments' => array(2),
+    'access callback' => 'islandora_fits_metadata_access',
+    'access arguments' => array(2),
+  );
+  $items['test'] = array(
+    'page callback' => 'test_info',
+    'page arguments' => array(array('object' => 'islandora:299')),
+    'access callback' => 'herp',
+  );
+  return $items;
+}
+
+function herp() {
+  return TRUE;
+}
+function islandora_fits_theme() {
+  return array(
+    'islandora_fits_metadata_display' => array(
+      'template' => 'theme/islandora_fits_metadata',
+      'variables' => array('fedora_object' => NULL),
     )
   );
 }
-
 /**
  * Implements hook_islandora_ingest_post_ingest().
  *
@@ -29,4 +53,87 @@ function islandora_fits_menu() {
 function islandora_fits_islandora_ingest_post_ingest(FedoraObject $object) {
   module_load_include('inc', 'islandora_fits', 'includes/islandora_fits.process');
   islandora_fits_create_techmd($object);
+}
+
+function islandora_fits_metadata_access($object) {
+  if ($object['TECHMD']) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+function islandora_fits_metadata_form($object) {
+  $form = array(
+    '#markup' => islandora_fits_metadata_display($object),
+  );
+  //dsm($form);
+  return $form;
+}
+
+function template_preprocess_islandora_fits_metadata_display(array &$variables) {
+  $object = $variables['fedora_object'];
+  $tech_md = $object->repository->api->a->getDatastreamDissemination($object->id, 'TECHMD');
+  $xml = new SimpleXMLElement($tech_md);
+  $variables['islandora_fits_metadata'] = islandora_fits_child_xpath($xml);
+  dsm($variables);
+}
+
+function islandora_fits_metadata_display($fedora_object) {
+  $output = theme('islandora_fits_metadata_display', array('fedora_object' => $fedora_object));
+  return $output;
+}
+
+function islandora_fits_child_xpath($xml) {
+  $results = $xml->xpath('/*/*');
+  $output = array();
+  foreach ($results as $result) {
+    islandora_fits_children($result, $output);
+  }
+  return $output;
+}
+
+function islandora_fits_children($child, &$output) {
+  $grandchildren = $child->xpath('*/*');
+
+  if (count($grandchildren) > 0) {
+    foreach ($grandchildren as $grandchild) {
+      islandora_fits_children($grandchild, $output);
+    }
+  }
+  else {
+    $text_results = $child->xpath('text()');
+    if ($text_results) {
+      foreach ($text_results as $text) {
+        $output_text = trim((string) $text);
+        if (!empty($output_text)) {
+          $output[islandora_fits_construct_label($child->getName())][] = $output_text;
+        }
+      }
+    }
+  }
+}
+
+function islandora_fits_construct_label($node_name) {
+  // Construct an arbitrary string with all capitals in it.
+  $capitals = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  $name_array = str_split($node_name);
+  $space_position = array();
+
+  foreach ($name_array as $key => $value) {
+
+    if (strpos($capitals, $value) !== FALSE) {
+      $space_position[] = $key;
+    }
+  }
+  if (count($space_position)) {
+    // Needed in event we add multiple spaces so need to keep track
+    $pos_offset = 0;
+    foreach ($space_position as $pos) {
+      $node_name = substr_replace($node_name, ' ', $pos + $pos_offset, 0);
+      $pos_offset++;
+    }
+  }
+  return ucwords($node_name);
 }
