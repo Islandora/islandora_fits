@@ -63,7 +63,7 @@ function islandora_fits_islandora_ingest_post_ingest(FedoraObject $object) {
 }
 
 function islandora_fits_metadata_access($object) {
-  if ($object['TECHMD'] && user_access('view technical metadata')) {
+  if ($object[variable_get('islandora_fits_techmd_dsid', 'TECHMD')] && user_access('view technical metadata')) {
     return TRUE;
   }
   else {
@@ -78,7 +78,7 @@ function islandora_fits_metadata_access($object) {
  */
 function template_preprocess_islandora_fits_metadata_display(array &$variables) {
   $object = $variables['islandora_object'];
-  $techmd_ds = $object->repository->api->a->getDatastreamDissemination($object->id, 'TECHMD');
+  $techmd_ds = $object->repository->api->a->getDatastreamDissemination($object->id, variable_get('islandora_fits_techmd_dsid', 'TECHMD'));
   $xml = new SimpleXMLElement($techmd_ds);
   $fits_metadata = islandora_fits_child_xpath($xml);
 
