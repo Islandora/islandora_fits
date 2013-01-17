@@ -82,32 +82,45 @@ function template_preprocess_islandora_fits_metadata_display(array &$variables) 
   $xml = new SimpleXMLElement($techmd_ds);
   $fits_metadata = islandora_fits_child_xpath($xml);
 
-  $rows = array();
   $headers = array(
     'label' => t('Field'),
     'value' => t('Value'),
   );
-  foreach ($fits_metadata as $key => $value) {
-    foreach ($value as $data) {
-      if (!array_key_exists($key, $rows)) {
-        $rows[$key] = array(
-          'label' => check_plain($key),
-          'value' => check_plain($data)
+  foreach ($fits_metadata as $tool_name => $vals_array) {
+    $variables['islandora_fits_data'][$tool_name] = array();
+    $rows =& $variables['islandora_fits_data'][$tool_name];
+    foreach ($vals_array as $field => $val_array) {
+      if (!array_key_exists($field, $rows)) {
+        $rows[$field] = array(
+          array('data' => check_plain($field), 'class' => 'islandora_fits_table_labels')
         );
+        foreach ($val_array as $value) {
+          if (!isset($rows[$field]['value'])) {
+            $rows[$field]['value'] = array('data' => check_plain($value), 'class' => 'islandora_fits_table_values');
+          }
+          else {
+            $rows[$field]['value'] = array('data' => $rows[$field]['value']['data'] .= '<br />' . check_plain($value), 'class' => 'islandora_fits_table_values');
+          }
+        }
       }
-      else {
-        $rows[$key]['data'] = $rows[$key]['data'] . '<br />' . $data;
-      }
+      $table_attributes = array('class' => array('islandora_fits_table'));
+
+      $table = array(
+        'header' => $headers,
+        'rows' => $rows,
+        'attributes' => $table_attributes
+      );
+      $variables['islandora_fits_table'][$tool_name] = $table;
+      $variables['islandora_fits_fieldsets'][$tool_name] = array(
+        '#type' => 'fieldset',
+        '#title' => $tool_name,
+        '#collapsed' => TRUE,
+        'table' => array(
+          '#markup' => theme('table', $table),
+        )
+      );
     }
   }
-  $table_attributes = array('class' => array('islandora_fits_table'));
-
-  $table = array(
-    'header' => $headers,
-    'rows' => $rows,
-    'attributes' => $table_attributes
-  );
-  $variables['islandora_fits_table'] = $table;
 }
 
 /**
@@ -162,23 +175,41 @@ function islandora_fits_children($child, &$output) {
   }
   else {
     $text_results = $child->xpath('text()');
+    $tool_name = FALSE;
     if ($text_results) {
       foreach ($text_results as $text) {
+        foreach ($text->attributes() as $key => $value) {
+          if ($key === 'toolname') {
+            $tool_name = trim((string) $value);
+          }
+        }
         $output_text = trim((string) $text);
         if (!empty($output_text)) {
-          $label = islandora_fits_construct_label($child->getName());
-
+          $fits_out = islandora_fits_construct_output($child->getName(), $tool_name);
+          $tool_label = $fits_out['tool'];
+          $field_label = $fits_out['name'];
           // Need to check if the label already exists in our output
           // such that we do not duplicate entries.
-          if (!array_key_exists($label, $output)) {
-            $output[$label][] = $output_text;
-          }
-          else {
-            foreach ($output[$label] as $key => $value) {
-              if ($value !== $output_text) {
-                $output[$label][] = $output_text;
+          if ($tool_label) {
+            if (isset($output[$tool_label])) {
+              if (!array_key_exists($field_label, $output[$tool_label])) {
+                $output[$tool_label][$field_label][] = $output_text;
+              }
+              else {
+                foreach ($output[$tool_label][$field_label] as $key => $value) {
+                  if ($value !== $output_text) {
+                    $output[$tool_label][$field_label][] = $output_text;
+                  }
+                }
               }
             }
+            else {
+              $output[$tool_label][$field_label][] = $output_text;
+            }
+          }
+          // No tool attribute
+          else {
+            $output['Unknown'][$field_label][] = $output_text;
           }
         }
       }
@@ -194,7 +225,7 @@ function islandora_fits_children($child, &$output) {
  *  @return String
  *   Constructed node name for output.
  */
-function islandora_fits_construct_label($node_name) {
+function islandora_fits_construct_output($node_name, $tool_name) {
   // Construct an arbitrary string with all capitals in it.
   $capitals = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   $name_array = str_split($node_name);
@@ -215,5 +246,7 @@ function islandora_fits_construct_label($node_name) {
       $pos_offset++;
     }
   }
-  return ucwords($node_name);
+  $node_name = ucwords($node_name);
+
+  return array('name' => $node_name, 'tool' => ucwords($tool_name));
 }
