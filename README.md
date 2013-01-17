@@ -20,9 +20,12 @@ The File Information Tool Set (http://code.google.com/p/fits/).
 #### INSTALLATION
 
 Download and unzip the fits tool which can be found at
-http://code.google.com/p/fits/.  Make sure to unzip it into a location where
-the apache user can get access.  Navigate to the unpacked fits folder and add
-executable permissions to fits.sh so the apache user can run the script.
+http://code.google.com/p/fits/ (you don't need the extras.zip just the latest version
+of fits-X.Y.Z.zip).  Make sure to unzip it into a location where the apache user can
+get access.  Navigate to the unpacked fits folder and add executable permissions to
+fits.sh so the apache user can run the script.  Clone this module into your drupal
+modules folder and enable it in drupal to activate automatic technical metadata
+extraction.
 
 #### CONFIGURATION
 
