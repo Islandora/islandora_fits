@@ -53,12 +53,12 @@ function islandora_fits_theme() {
 }
 
 /**
- * Implements hook_islandora_ingest_post_ingest().
+ * Implements hook_islandora_object_ingested().
  *
  * Create technical metadata (specifically FITS) datastreams for the input object.
  */
-function islandora_fits_islandora_ingest_post_ingest(FedoraObject $object) {
-  module_load_include('inc', 'islandora_fits', 'includes/utilities');
+function islandora_fits_islandora_object_ingested(FedoraObject $object) {
+  module_load_include('inc', 'islandora_fits', 'includes/islandora_fits.process');
   islandora_fits_create_techmd($object);
 }
 
