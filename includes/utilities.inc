@@ -71,6 +71,13 @@ function islandora_fits_create_fits($file) {
   if ($ret == "0") {
     return $outfile;
   }
+  // in case of disaster, fall back to the simplest possibly command line
+  $command = variable_get("islandora_fits_executable_path", "fits.sh") . " -i "
+    . $file . " -o " . $outfile;
+  exec($command, $output, $ret);
+  if ($ret == "0") {
+    return $outfile;
+  }
   return FALSE;
 }
 

@@ -15,7 +15,7 @@ function islandora_fits_menu() {
     'page callback' => 'drupal_get_form',
     'access arguments' => array('administer site configuration'),
     'page arguments' => array('islandora_fits_admin_form'),
-    'file' => 'admin/islandora_fits.admin.inc',
+    'file' => 'includes/admin.form.inc',
     'type' => MENU_NORMAL_ITEM,
   );
   $items['islandora/object/%islandora_object/manage/fits_metadata'] = array(
