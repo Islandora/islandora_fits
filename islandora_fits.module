@@ -58,7 +58,7 @@ function islandora_fits_theme() {
  * Create technical metadata (specifically FITS) datastreams for the input object.
  */
 function islandora_fits_islandora_object_ingested(FedoraObject $object) {
-  module_load_include('inc', 'islandora_fits', 'includes/islandora_fits.process');
+  module_load_include('inc', 'islandora_fits', 'includes/utilities');
   islandora_fits_create_techmd($object);
 }
 
