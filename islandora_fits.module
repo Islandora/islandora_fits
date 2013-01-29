@@ -15,7 +15,7 @@ function islandora_fits_menu() {
     'page callback' => 'drupal_get_form',
     'access arguments' => array('administer site configuration'),
     'page arguments' => array('islandora_fits_admin_form'),
-    'file' => 'admin/islandora_fits.admin.inc',
+    'file' => 'includes/admin.form.inc',
     'type' => MENU_NORMAL_ITEM,
   );
   $items['islandora/object/%islandora_object/manage/fits_metadata'] = array(
@@ -58,7 +58,7 @@ function islandora_fits_theme() {
  * Create technical metadata (specifically FITS) datastreams for the input object.
  */
 function islandora_fits_islandora_ingest_post_ingest(FedoraObject $object) {
-  module_load_include('inc', 'islandora_fits', 'includes/islandora_fits.process');
+  module_load_include('inc', 'islandora_fits', 'includes/utilities');
   islandora_fits_create_techmd($object);
 }
 
