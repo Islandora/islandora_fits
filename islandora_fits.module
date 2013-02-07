@@ -46,7 +46,7 @@ function islandora_fits_permission() {
 function islandora_fits_theme() {
   return array(
     'islandora_fits_metadata_display' => array(
-      'template' => 'theme/islandora_fits_metadata',
+      'template' => 'theme/islandora-fits-metadata',
       'variables' => array('islandora_object' => NULL, 'islandora_fits_table' => NULL),
     )
   );
