@@ -47,6 +47,8 @@ function islandora_fits_create_techmd(FedoraObject $object) {
 
 /**
  * Creates the technical metadata derivative from the given file.
+ * Function updated to reset output after each attempt to generate
+ * metadata derivative's. 
  *
  * @param string $file_uri
  *   The URI to the file from which the derivative will be generated.
@@ -62,23 +64,53 @@ function islandora_fits_create_fits($file) {
     . $file . " -xc -o " . $outfile;
   exec($command, $output, $ret);
   if ($ret == "0") {
-    return $outfile;
+    if (verify_fits_xml($outfile)) {
+      return $outfile;
+    }
   }
-  // if it failed, lets try a simpler command (-x instead of -xc)
+  $output = array();
+   // if it failed, lets try a simpler command (-x instead of -xc)
   $command = variable_get("islandora_fits_executable_path", "fits.sh") . " -i "
     . $file . " -x -o " . $outfile;
   exec($command, $output, $ret);
   if ($ret == "0") {
-    return $outfile;
+    if (verify_fits_xml($outfile)) {
+     return $outfile;
+    }
   }
+  $output = array();
   // in case of disaster, fall back to the simplest possibly command line
   $command = variable_get("islandora_fits_executable_path", "fits.sh") . " -i "
     . $file . " -o " . $outfile;
   exec($command, $output, $ret);
   if ($ret == "0") {
-    return $outfile;
+    if (verify_fits_xml($outfile)) {
+      return $outfile;
+    }
   }
   return FALSE;
+}
+
+/**
+ * Helper to verify the fits xml file size is greater then 0. This
+ * function does not verify the contents of the provided xml file.
+ * WARNING: This function will delete said file if its file size
+ *   is equel to 0.
+ * 
+ * @param String $xmlFile
+ *   The path to the created xml file to validate
+ */
+function verify_fits_xml($xml_file) {
+  if (filesize($xml_file) > 0) {
+    return TRUE;
+  }
+  else{
+    // Fits wont write to a file if it already exists
+    if (file_exists($xml_file)) {
+      unlink($xml_file);
+    }
+    return FALSE;
+  }
 }
 
 /**
