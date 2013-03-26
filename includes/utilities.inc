@@ -64,10 +64,9 @@ function islandora_fits_create_fits($file) {
     . $file . " -xc -o " . $outfile;
   exec($command, $output, $ret);
   if ($ret == "0") {
-  	if(verifyFitsXml($outfile))
-  	{
-  		return $outfile;
-  	}
+    if (verify_fits_xml($outfile)) {
+      return $outfile;
+    }
   }
   $output = array();
    // if it failed, lets try a simpler command (-x instead of -xc)
@@ -75,10 +74,9 @@ function islandora_fits_create_fits($file) {
     . $file . " -x -o " . $outfile;
   exec($command, $output, $ret);
   if ($ret == "0") {
-  	if(verifyFitsXml($outfile))
-  	{
-  		return $outfile;
-  	}
+    if (verify_fits_xml($outfile)) {
+     return $outfile;
+    }
   }
   $output = array();
   // in case of disaster, fall back to the simplest possibly command line
@@ -86,10 +84,9 @@ function islandora_fits_create_fits($file) {
     . $file . " -o " . $outfile;
   exec($command, $output, $ret);
   if ($ret == "0") {
-  	if(verifyFitsXml($outfile))
-  	{
-  		return $outfile;
-  	}
+    if (verify_fits_xml($outfile)) {
+      return $outfile;
+    }
   }
   return FALSE;
 }
@@ -103,20 +100,17 @@ function islandora_fits_create_fits($file) {
  * @param String $xmlFile
  *   The path to the created xml file to validate
  */
-function verifyFitsXml($xmlFile){
-	if(filesize($xmlFile) > 0)
-	{
-		return TRUE;
-	}
-	else
-	{
-		// Fits wont write to a file if it already exists
-		if(file_exists($xmlFile))
-		{
-			unlink($xmlFile);
-		}
-		return FALSE;
-	}
+function verify_fits_xml($xml_file) {
+  if (filesize($xml_file) > 0) {
+    return TRUE;
+  }
+  else{
+    // Fits wont write to a file if it already exists
+    if (file_exists($xml_file)) {
+      unlink($xml_file);
+    }
+    return FALSE;
+  }
 }
 
 /**
