@@ -10,8 +10,8 @@
 function islandora_fits_menu() {
   $items = array();
   $items['admin/islandora/fits'] = array(
-    'title' => 'Fits Tool',
-    'description' => 'Configure the Islandora Fits extractor.',
+    'title' => 'FITS Tool',
+    'description' => 'Configure the Islandora FITS extractor.',
     'page callback' => 'drupal_get_form',
     'access arguments' => array('administer site configuration'),
     'page arguments' => array('islandora_fits_admin_form'),

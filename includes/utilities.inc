@@ -29,7 +29,7 @@ function islandora_fits_create_techmd(FedoraObject $object) {
   $fits_file = islandora_fits_create_fits($out_file);
   if ($fits_file === FALSE) {
     watchdog("islandora_fits",
-             t("Failed to create technical metadata with fits script."));
+             t("Failed to create technical metadata with FITS script."));
   }
   else {
     islandora_fits_add_datastream($object,
