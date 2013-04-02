@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * Miscellaneous helper functions for creating/ingesting FITS documents.
  */
 
 /**
@@ -10,7 +11,7 @@
  * @param FedoraObject $object
  *   The object that will be used to generate/store the derivatives.
  *
- * @return boolean
+ * @return bool
  *   TRUE if the techmd datastream was created, FALSE otherwise.
  */
 function islandora_fits_create_techmd(FedoraObject $object) {
@@ -22,23 +23,20 @@ function islandora_fits_create_techmd(FedoraObject $object) {
   }
   $mime_detect = new MimeDetect();
   $ext = $mime_detect->getExtension($object['OBJ']->mimeType);
-  $file_name = str_replace(":", "-", $object->id);
+  $file_name = str_replace(':', '-', $object->id);
   $out_file = drupal_realpath("temporary://{$file_name}.OBJ.{$ext}");
   $object['OBJ']->getContent($out_file);
 
   $fits_file = islandora_fits_create_fits($out_file);
   if ($fits_file === FALSE) {
-    watchdog("islandora_fits",
-             t("Failed to create technical metadata with fits script."));
+    watchdog('islandora_fits', 'Failed to create technical metadata with fits script.');
   }
   else {
-    islandora_fits_add_datastream($object,
-      variable_get('islandora_fits_techmd_dsid', 'TECHMD'), $fits_file);
-    drupal_unlink($fits_file); // just in case
+    islandora_fits_add_datastream($object, variable_get('islandora_fits_techmd_dsid', 'TECHMD'), $fits_file);
+    drupal_unlink($fits_file);
   }
 
-  // add any more processors here - there probably won't be any
-
+  // Add any more processors here - there probably won't be any.
   drupal_unlink($out_file);
 
   // If fits_file resolved then we succeeded, otherwise we failed.
@@ -47,10 +45,8 @@ function islandora_fits_create_techmd(FedoraObject $object) {
 
 /**
  * Creates the technical metadata derivative from the given file.
- * Function updated to reset output after each attempt to generate
- * metadata derivative's. 
  *
- * @param string $file_uri
+ * @param string $file
  *   The URI to the file from which the derivative will be generated.
  *
  * @return string
@@ -58,32 +54,29 @@ function islandora_fits_create_techmd(FedoraObject $object) {
  */
 function islandora_fits_create_fits($file) {
   $output = array();
-  $outfile = $file . ".tech.xml";
-  // compose fits command
-  $command = variable_get("islandora_fits_executable_path", "fits.sh") . " -i "
-    . $file . " -xc -o " . $outfile;
+  $outfile = "{$file}.tech.xml";
+  $fits = variable_get('islandora_fits_executable_path', 'fits.sh');
+  $command = "$fits -i $file -xc -o $outfile";
   exec($command, $output, $ret);
-  if ($ret == "0") {
+  if ($ret == '0') {
     if (verify_fits_xml($outfile)) {
       return $outfile;
     }
   }
   $output = array();
-   // if it failed, lets try a simpler command (-x instead of -xc)
-  $command = variable_get("islandora_fits_executable_path", "fits.sh") . " -i "
-    . $file . " -x -o " . $outfile;
+  // It failed, lets try a simpler command (-x instead of -xc).
+  $command = "$fits -i $file -x -o $outfile";
   exec($command, $output, $ret);
-  if ($ret == "0") {
+  if ($ret == '0') {
     if (verify_fits_xml($outfile)) {
       return $outfile;
     }
   }
   $output = array();
-  // in case of disaster, fall back to the simplest possibly command line
-  $command = variable_get("islandora_fits_executable_path", "fits.sh") . " -i "
-    . $file . " -o " . $outfile;
+  // In case of disaster, fall back to the simplest possibly command line.
+  $command = "$fits -i $file -o $outfile";
   exec($command, $output, $ret);
-  if ($ret == "0") {
+  if ($ret == '0') {
     if (verify_fits_xml($outfile)) {
       return $outfile;
     }
@@ -92,12 +85,13 @@ function islandora_fits_create_fits($file) {
 }
 
 /**
- * Helper to verify the fits xml file size is greater then 0. This
- * function does not verify the contents of the provided xml file.
+ * Helper to verify the fits xml file size is greater then 0.
+ *
+ * This function does not verify the contents of the provided xml file.
  * WARNING: This function will delete said file if its file size
  *   is equel to 0.
- * 
- * @param String $xmlFile
+ *
+ * @param String $xml_file
  *   The path to the created xml file to validate
  */
 function verify_fits_xml($xml_file) {
@@ -105,20 +99,19 @@ function verify_fits_xml($xml_file) {
     return TRUE;
   }
   else {
-  // Fits wont write to a file if it already exists
+    // Fits wont write to a file if it already exists.
     if (file_exists($xml_file)) {
-      unlink($xml_file);
+      drupal_unlink($xml_file);
     }
     return FALSE;
   }
 }
 
 /**
- * Adds the given file as a datastream to the given object using the given
- * datastream id to identify it.
+ * Adds the given file as a datastream to the given object.
  *
  * @param FedoraObject $object
- *  The object to add the datasteam to.
+ *   The object to add the datasteam to.
  * @param string $datastream_id
  *   The datastream id of the added datastream.
  * @param string $file_uri
@@ -127,13 +120,13 @@ function verify_fits_xml($xml_file) {
 function islandora_fits_add_datastream($object, $datastream_id, $file_uri) {
   try {
     $mime_detector = new MimeDetect();
-    $ds = $object->constructDatastream($datastream_id, "M");
+    $ds = $object->constructDatastream($datastream_id, 'M');
     $ds->label = $datastream_id;
     $ds->mimetype = $mime_detector->getMimetype($file_uri);
     $ds->setContentFromFile(drupal_realpath($file_uri));
     $object->ingestDatastream($ds);
   }
   catch (exception $e) {
-    drupal_set_message(t("@message", array("@message" => $e->getMessage())));
+    drupal_set_message(t('@message', array('@message' => $e->getMessage())));
   }
 }
