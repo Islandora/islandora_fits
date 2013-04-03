@@ -21,9 +21,9 @@ function islandora_fits_admin_form($form, $form_state) {
   );
   $form['islandora_fits_wrapper']['islandora_fits_executable_path'] = array(
     '#type' => 'textfield',
-    '#title' => t('System path to fits processor'),
+    '#title' => t('System path to FITS processor'),
     '#name' => 'islandora_fits_path_textfield',
-    '#description' => t('Enter the location and filename (on the system) of the fits processing script.  Include the filename, not just the path.'),
+    '#description' => t('Enter the location and filename (on the system) of the FITS processing script. Include the filename, not just the path.'),
     '#default_value' => $fits_path,
     '#ajax' => array(
       'callback' => 'islandora_fits_path_ajax',
@@ -36,8 +36,8 @@ function islandora_fits_admin_form($form, $form_state) {
   // add form options for what the datastream is called
   $form['islandora_fits_techmd_dsid'] = array(
     '#type' => 'textfield',
-    '#title' => t('Technical metadata datastream id'),
-    '#description' => t('This is the dsid of the technical metadata on the object.'),
+    '#title' => t('Technical metadata datastream ID'),
+    '#description' => t('The DSID to use for an object\'s technical metadata.'),
     '#default_value' => variable_get('islandora_fits_techmd_dsid', 'TECHMD'),
   );
   // add options to include/exclude certain mimetypes/extensions/solution packs
@@ -68,10 +68,10 @@ function islandora_fits_path_check($fits_path) {
   exec('stat ' . $fits_path, $output, $return_value);
 
   if ($return_value !== 0) {
-    $confirmation_message = '<img src="' . url('misc/watchdog-error.png') . '"/>' . t('Unable to locate the fits.sh file at the above location!');
+    $confirmation_message = '<img src="' . url('misc/watchdog-error.png') . '"/>' . t('Unable to locate fits.sh at the above location!');
   }
   else {
-    $confirmation_message = '<img src="' . url('misc/watchdog-ok.png') . '"/>' . t('Found the fits.sh file at the above location!');
+    $confirmation_message = '<img src="' . url('misc/watchdog-ok.png') . '"/>' . t('Found fits.sh at the above location!');
   }
   return $confirmation_message;
 }
