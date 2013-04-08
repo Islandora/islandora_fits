@@ -11,7 +11,9 @@ The -xc command can sometimes cause problems, so if that fails, the module tries
 >fits.sh -i *infile* -x -o *outfile*
 
 Should that fail, technical metadata extraction is aborted and the error is
-logged in the watchdog.
+logged in the watchdog (An error my be produced and logged in the apache error.log file even
+if TECHMD DS extraction is successfull, as the first attempt may fail and log an error while
+subsequent attempts may succeed).
 
 #### REQUIREMENTS
 
