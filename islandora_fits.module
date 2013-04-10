@@ -138,7 +138,7 @@ function template_preprocess_islandora_fits_metadata_display(array &$variables) 
  *   The marked up output for display in Drupal.
  */
 function islandora_fits_metadata_display($object) {
-  module_load_include('inc', 'islandora', 'includes/breadcrumbs');
+  module_load_include('inc', 'islandora', 'includes/breadcrumb');
   drupal_set_breadcrumb(islandora_get_breadcrumbs($object));
   $output = theme('islandora_fits_metadata_display', array('islandora_object' => $object));
   return $output;
