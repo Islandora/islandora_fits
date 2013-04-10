@@ -11,7 +11,19 @@ The -xc command can sometimes cause problems, so if that fails, the module tries
 >fits.sh -i *infile* -x -o *outfile*
 
 Should that fail, technical metadata extraction is aborted and the error is
-logged in the watchdog.
+logged in the watchdog. An error my be produced and logged in the apache error.log file even
+if TECHMD DS extraction is successfull, as the first attempt may fail and log an error while
+subsequent attempts may succeed.
+
+The most common error printed out to the error.log file that is safe to ignore is as follows:
+"Exception in thread "main" java.lang.NullPointerException
+    at edu.harvard.hul.ois.fits.FitsOutput.addStandardCombinedFormat(FitsOutput.java:310)
+    at edu.harvard.hul.ois.fits.Fits.outputStandardCombinedFormat(Fits.java:294)
+    at edu.harvard.hul.ois.fits.Fits.outputResults(Fits.java:275)
+    at edu.harvard.hul.ois.fits.Fits.main(Fits.java:186)
+Error: output cannot be converted to a standard schema format for this file"
+
+Watchdog will be updated when TECHMD DS fail's to generate.
 
 #### REQUIREMENTS
 
