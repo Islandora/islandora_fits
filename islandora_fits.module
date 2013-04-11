@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * The main fits module file. Contains most of the hook implementations.
  */
 
 /**
@@ -48,20 +49,24 @@ function islandora_fits_theme() {
     'islandora_fits_metadata_display' => array(
       'template' => 'theme/islandora-fits-metadata',
       'variables' => array('islandora_object' => NULL, 'islandora_fits_table' => NULL),
-    )
+    ),
   );
 }
 
 /**
  * Implements hook_islandora_object_ingested().
  *
- * Create technical metadata (specifically FITS) datastreams for the input object.
+ * Create technical metadata (specifically FITS) datastreams for the 
+ * input object.
  */
 function islandora_fits_islandora_object_ingested(FedoraObject $object) {
   module_load_include('inc', 'islandora_fits', 'includes/utilities');
   islandora_fits_create_techmd($object);
 }
 
+/**
+ * Access callback for the FITS metadata display.
+ */
 function islandora_fits_metadata_access($object) {
   if ($object[variable_get('islandora_fits_techmd_dsid', 'TECHMD')] && user_access('view technical metadata')) {
     return TRUE;
@@ -72,9 +77,7 @@ function islandora_fits_metadata_access($object) {
 }
 
 /**
- * Preprocess function that grabs the TECHMD datastream and processes for output.
- *
- * @param array $variables
+ * Preprocess function that processes the TECHMD datastream and for output.
  */
 function template_preprocess_islandora_fits_metadata_display(array &$variables) {
   $object = $variables['islandora_object'];
@@ -92,7 +95,7 @@ function template_preprocess_islandora_fits_metadata_display(array &$variables) 
     foreach ($vals_array as $field => $val_array) {
       if (!array_key_exists($field, $rows)) {
         $rows[$field] = array(
-          array('data' => check_plain($field), 'class' => 'islandora_fits_table_labels')
+          array('data' => check_plain($field), 'class' => 'islandora_fits_table_labels'),
         );
         foreach ($val_array as $value) {
           if (!isset($rows[$field]['value'])) {
@@ -108,7 +111,7 @@ function template_preprocess_islandora_fits_metadata_display(array &$variables) 
       $table = array(
         'header' => $headers,
         'rows' => $rows,
-        'attributes' => $table_attributes
+        'attributes' => $table_attributes,
       );
       $variables['islandora_fits_table'][$tool_name] = $table;
       $variables['islandora_fits_fieldsets'][$tool_name] = array(
@@ -117,18 +120,19 @@ function template_preprocess_islandora_fits_metadata_display(array &$variables) 
         '#collapsed' => TRUE,
         'table' => array(
           '#markup' => theme('table', $table),
-        )
+        ),
       );
     }
   }
 }
 
 /**
- * Menu callback function
+ * Menu callback function.
  *
  * @param IslandoraObject $object
+ *   The islandora object to display the metadata for.
  *
- * @return type
+ * @return string
  *   The marked up output for display in Drupal.
  */
 function islandora_fits_metadata_display($object) {
@@ -137,10 +141,12 @@ function islandora_fits_metadata_display($object) {
 }
 
 /**
- * Originally finds the the first set of children from the TECHMD datastream
- * perform passing it off recursively.
+ * Finds the the first set of children from the TECHMD datastream.
  *
- * @param XML $xml
+ * One it has these it passes them off recursively.
+ *
+ * @param SimpleXMLElement $xml
+ *   The SimpleXMLElement to parse.
  *
  * @return array
  *   An array containing key/value pairs of fields and data.
@@ -155,6 +161,8 @@ function islandora_fits_child_xpath($xml) {
 }
 
 /**
+ * Finds children for fits module.
+ *
  * Recursive function that searches continously until we a leaf
  * at which point we grab the node's text value and add to
  * the output array.
@@ -207,7 +215,7 @@ function islandora_fits_children($child, &$output) {
               $output[$tool_label][$field_label][] = $output_text;
             }
           }
-          // No tool attribute
+          // No tool attribute.
           else {
             $output['Unknown'][$field_label][] = $output_text;
           }
@@ -218,11 +226,12 @@ function islandora_fits_children($child, &$output) {
 }
 
 /**
- *
+ * Builds display by parsing strings.
+ * 
  * @param String $node_name
  *   Name of the current node that we will display.
  *
- *  @return String
+ * @return String
  *   Constructed node name for output.
  */
 function islandora_fits_construct_output($node_name, $tool_name) {
@@ -239,7 +248,7 @@ function islandora_fits_construct_output($node_name, $tool_name) {
     }
   }
   if (count($space_position)) {
-    // Needed in event we add multiple spaces so need to keep track
+    // Needed in event we add multiple spaces so need to keep track.
     $pos_offset = 0;
     foreach ($space_position as $pos) {
       $node_name = substr_replace($node_name, ' ', $pos + $pos_offset, 0);
