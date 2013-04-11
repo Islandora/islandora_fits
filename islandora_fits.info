@@ -6,3 +6,4 @@ core = 7.x
 configure = admin/islandora/fits
 php = 5.3
 stylesheets[all][] = css/islandora_fits.css
+dependencies[] = islandora
