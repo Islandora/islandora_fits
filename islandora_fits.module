@@ -3,6 +3,8 @@
 /**
  * @file
  * The main fits module file. Contains most of the hook implementations.
+ *
+ * @todo Add uninstall hook to delete our the variables we set.
  */
 
 /**
