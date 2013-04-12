@@ -78,7 +78,7 @@ function islandora_fits_metadata_access($object) {
  */
 function template_preprocess_islandora_fits_metadata_display(array &$variables) {
   $object = $variables['islandora_object'];
-  $techmd_ds = $object->repository->api->a->getDatastreamDissemination($object->id, variable_get('islandora_fits_techmd_dsid', 'TECHMD'));
+  $techmd_ds = $object[variable_get('islandora_fits_techmd_dsid', 'TECHMD')]->content;
   $xml = new SimpleXMLElement($techmd_ds);
   $fits_metadata = islandora_fits_child_xpath($xml);
 
@@ -132,6 +132,8 @@ function template_preprocess_islandora_fits_metadata_display(array &$variables) 
  *   The marked up output for display in Drupal.
  */
 function islandora_fits_metadata_display($object) {
+  module_load_include('inc', 'islandora', 'includes/breadcrumbs');
+  drupal_set_breadcrumb(islandora_get_breadcrumbs($object));
   $output = theme('islandora_fits_metadata_display', array('islandora_object' => $object));
   return $output;
 }
