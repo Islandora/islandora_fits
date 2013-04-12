@@ -2,7 +2,6 @@
 
 /**
  * @file
- *
  * This is a template used to display the technical metadata that
  * is present in the TECHMD datastream.
  *
@@ -16,7 +15,6 @@
  *
  * islandora_fits_fieldsets contains fieldset markup to structure the output
  * of the individual tables.
- *
  */
 ?>
 
