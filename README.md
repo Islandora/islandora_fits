@@ -1,3 +1,11 @@
+#### BUILD STATUS
+
+Current build status:
+[![Build Status](https://travis-ci.org/Islandora/islandora_fits.png?branch=7.x)](https://travis-ci.org/Islandora/islandora_fits)
+
+CI Server:
+http://jenkins.discoverygarden.ca
+
 #### SUMMARY
 
 A simple module to extend islandora solution pack install processes by adding
