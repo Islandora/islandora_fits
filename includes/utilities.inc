@@ -8,13 +8,13 @@
 /**
  * Creates all technical metadata derivatives as datastreams for given object.
  *
- * @param FedoraObject $object
+ * @param AbstractObject $object
  *   The object that will be used to generate/store the derivatives.
  *
  * @return bool
  *   TRUE if the techmd datastream was created, FALSE otherwise.
  */
-function islandora_fits_create_techmd(FedoraObject $object) {
+function islandora_fits_create_techmd(AbstractObject $object) {
   if (!isset($object["OBJ"])) {
     $message = 'No OBJ datastream present for object @pid - technical metadata extraction was skipped.';
     $vars = array('@pid' => $object->id);
@@ -110,7 +110,7 @@ function verify_fits_xml($xml_file) {
 /**
  * Adds the given file as a datastream to the given object.
  *
- * @param FedoraObject $object
+ * @param AbstractObject $object
  *   The object to add the datasteam to.
  * @param string $datastream_id
  *   The datastream id of the added datastream.
