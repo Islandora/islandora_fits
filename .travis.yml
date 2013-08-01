@@ -21,5 +21,4 @@ script:
   - $ISLANDORA_DIR/tests/scripts/line_endings.sh sites/all/modules/islandora_fits
   - drush dcs sites/all/modules/islandora_fits
   - phpcpd --names *.module,*.inc,*.test,*.php sites/all/modules/islandora_fits
-# TODO uncomment this when we have tests ready to roll
-#  - drush test-run --uri=http://localhost:8081 "Islandora FITS"
+  - drush test-run --uri=http://localhost:8081 "Islandora FITS"
