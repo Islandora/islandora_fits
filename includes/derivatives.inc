@@ -14,12 +14,12 @@
  *   Whether derivative generation is being forced or not.
  *
  * @return array
- *   An array describing the outcome of the thumbnail creation.
+ *   An array describing the outcome of the TECHMD creation.
  *
  * @see hook_islandora_derivative()
  */
 function islandora_fits_create_techmd(AbstractObject $object, $force = FALSE) {
-  if (!isset($object['TECHMD']) || (isset($object['TECHMD']) && $force === TRUE)) {
+  if ($force || !isset($object['TECHMD'])) {
     if (!isset($object["OBJ"])) {
       return array(
         'success' => FALSE,
@@ -79,7 +79,7 @@ function islandora_fits_create_fits($file) {
   $command = "$fits -i $file -xc -o $outfile";
   exec($command, $output, $ret);
   if ($ret == '0') {
-    if (verify_fits_xml($outfile)) {
+    if (islandora_fits_verify_fits_xml($outfile)) {
       return $outfile;
     }
   }
@@ -88,7 +88,7 @@ function islandora_fits_create_fits($file) {
   $command = "$fits -i $file -x -o $outfile";
   exec($command, $output, $ret);
   if ($ret == '0') {
-    if (verify_fits_xml($outfile)) {
+    if (islandora_fits_verify_fits_xml($outfile)) {
       return $outfile;
     }
   }
@@ -97,7 +97,7 @@ function islandora_fits_create_fits($file) {
   $command = "$fits -i $file -o $outfile";
   exec($command, $output, $ret);
   if ($ret == '0') {
-    if (verify_fits_xml($outfile)) {
+    if (islandora_fits_verify_fits_xml($outfile)) {
       return $outfile;
     }
   }
@@ -116,7 +116,7 @@ function islandora_fits_create_fits($file) {
  * @return bool
  *   TRUE if the generated XML has size, FALSE otherwise.
  */
-function verify_fits_xml($xml_file) {
+function islandora_fits_verify_fits_xml($xml_file) {
   if (filesize($xml_file) > 0) {
     return TRUE;
   }
@@ -140,7 +140,7 @@ function verify_fits_xml($xml_file) {
  *   A URI to the file containing the content for the datastream.
  *
  * @return array
- *   An array describing the outcome of the thumbnail creation.
+ *   An array describing the outcome of the datastream addition.
  *
  * @see hook_islandora_derivative()
  */
