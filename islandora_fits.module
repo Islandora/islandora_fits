@@ -58,7 +58,7 @@ function islandora_fits_theme() {
 /**
  * Implements hook_islandora_object_ingested().
  *
- * Create technical metadata (specifically FITS) datastreams for the 
+ * Create technical metadata (specifically FITS) datastreams for the
  * input object.
  */
 function islandora_fits_islandora_object_ingested(AbstractObject $object) {
@@ -86,44 +86,52 @@ function template_preprocess_islandora_fits_metadata_display(array &$variables) 
   $techmd_ds = $object[variable_get('islandora_fits_techmd_dsid', 'TECHMD')]->content;
   $xml = new SimpleXMLElement($techmd_ds);
   $fits_metadata = islandora_fits_child_xpath($xml);
-
   $headers = array(
     'label' => t('Field'),
     'value' => t('Value'),
   );
-  foreach ($fits_metadata as $tool_name => $vals_array) {
-    $variables['islandora_fits_data'][$tool_name] = array();
-    $rows =& $variables['islandora_fits_data'][$tool_name];
-    foreach ($vals_array as $field => $val_array) {
-      if (!array_key_exists($field, $rows)) {
-        $rows[$field] = array(
-          array('data' => check_plain($field), 'class' => 'islandora_fits_table_labels'),
-        );
-        foreach ($val_array as $value) {
-          if (!isset($rows[$field]['value'])) {
-            $rows[$field]['value'] = array('data' => check_plain($value), 'class' => 'islandora_fits_table_values');
-          }
-          else {
-            $rows[$field]['value'] = array('data' => $rows[$field]['value']['data'] .= '<br />' . check_plain($value), 'class' => 'islandora_fits_table_values');
+  if (count($fits_metadata) == 0) {
+    $variables['islandora_fits_table']['epmty'] = '';
+    $variables['islandora_fits_fieldsets']['epmty'] = array(
+      '#type' => 'markup',
+      '#markup' => t('No technical metadata found.'),
+    );
+  }
+  else {
+    foreach ($fits_metadata as $tool_name => $vals_array) {
+      $variables['islandora_fits_data'][$tool_name] = array();
+      $rows = & $variables['islandora_fits_data'][$tool_name];
+      foreach ($vals_array as $field => $val_array) {
+        if (!array_key_exists($field, $rows)) {
+          $rows[$field] = array(
+            array('data' => check_plain($field), 'class' => 'islandora_fits_table_labels'),
+          );
+          foreach ($val_array as $value) {
+            if (!isset($rows[$field]['value'])) {
+              $rows[$field]['value'] = array('data' => check_plain($value), 'class' => 'islandora_fits_table_values');
+            }
+            else {
+              $rows[$field]['value'] = array('data' => $rows[$field]['value']['data'] .= '<br />' . check_plain($value), 'class' => 'islandora_fits_table_values');
+            }
           }
         }
-      }
-      $table_attributes = array('class' => array('islandora_fits_table'));
+        $table_attributes = array('class' => array('islandora_fits_table'));
 
-      $table = array(
-        'header' => $headers,
-        'rows' => $rows,
-        'attributes' => $table_attributes,
-      );
-      $variables['islandora_fits_table'][$tool_name] = $table;
-      $variables['islandora_fits_fieldsets'][$tool_name] = array(
-        '#type' => 'fieldset',
-        '#title' => $tool_name,
-        '#collapsed' => TRUE,
-        'table' => array(
-          '#markup' => theme('table', $table),
-        ),
-      );
+        $table = array(
+          'header' => $headers,
+          'rows' => $rows,
+          'attributes' => $table_attributes,
+        );
+        $variables['islandora_fits_table'][$tool_name] = $table;
+        $variables['islandora_fits_fieldsets'][$tool_name] = array(
+          '#type' => 'fieldset',
+          '#title' => $tool_name,
+          '#collapsed' => TRUE,
+          'table' => array(
+            '#markup' => theme('table', $table),
+          ),
+        );
+      }
     }
   }
 }
@@ -231,7 +239,7 @@ function islandora_fits_children($child, &$output) {
 
 /**
  * Builds display by parsing strings.
- * 
+ *
  * @param String $node_name
  *   Name of the current node that we will display.
  *
