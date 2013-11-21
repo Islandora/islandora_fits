@@ -56,14 +56,20 @@ function islandora_fits_theme() {
 }
 
 /**
- * Implements hook_islandora_object_ingested().
- *
- * Create technical metadata (specifically FITS) datastreams for the
- * input object.
+ * Implements hook_islandora_derivative().
  */
-function islandora_fits_islandora_object_ingested(AbstractObject $object) {
-  module_load_include('inc', 'islandora_fits', 'includes/utilities');
-  islandora_fits_create_techmd($object);
+function islandora_fits_islandora_derivative() {
+  return array(
+    array(
+      'source_dsid' => 'OBJ',
+      'destination_dsid' => 'TECHMD',
+      'weight' => '0',
+      'function' => array(
+        'islandora_fits_create_techmd',
+      ),
+      'file' => drupal_get_path('module', 'islandora_fits') . '/includes/derivatives.inc',
+    ),
+  );
 }
 
 /**
@@ -240,10 +246,12 @@ function islandora_fits_children($child, &$output) {
 /**
  * Builds display by parsing strings.
  *
- * @param String $node_name
+ * @param string $node_name
  *   Name of the current node that we will display.
+ * @param string $tool_name
+ *   Name of the tool used to generate the metadata.
  *
- * @return String
+ * @return string
  *   Constructed node name for output.
  */
 function islandora_fits_construct_output($node_name, $tool_name) {
