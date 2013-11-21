@@ -97,8 +97,8 @@ function template_preprocess_islandora_fits_metadata_display(array &$variables) 
     'value' => t('Value'),
   );
   if (count($fits_metadata) == 0) {
-    $variables['islandora_fits_table']['epmty'] = '';
-    $variables['islandora_fits_fieldsets']['epmty'] = array(
+    $variables['islandora_fits_table']['empty'] = '';
+    $variables['islandora_fits_fieldsets']['empty'] = array(
       '#type' => 'markup',
       '#markup' => t('No technical metadata found.'),
     );
