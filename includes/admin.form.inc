@@ -83,13 +83,26 @@ function islandora_fits_path_ajax($form, $form_state) {
 function islandora_fits_path_check($fits_path) {
   $output = array();
   $return_value = '';
-  exec('stat ' . $fits_path, $output, $return_value);
+
+  // Updated: slangerx, 2013-11-08
+  $command = 'stat ' . $fits_path;
+
+  // Determine if the server is running Windows.
+  if ((islandora_os_check() == "Windows") && (strpos($fits_path, ".sh") === FALSE)) {
+    // In Windows, $command returns the message: "'stat' is not recognized
+    // as an internal or external command, operable program or batch file."
+    // The updated $command (below) returns FITS version information, which
+    // is enough to verify that the FITS processing script was found.
+    $command = $fits_path . ' -v';
+  }
+
+  exec($command, $output, $return_value);
 
   if ($return_value !== 0) {
-    $confirmation_message = '<img src="' . url('misc/watchdog-error.png') . '"/>' . t('Unable to locate fits.sh at the above location!');
+    $confirmation_message = '<img src="' . url('misc/watchdog-error.png') . '"/>' . t('Unable to locate ' . ((islandora_os_check() == "Windows") ? 'fits.bat' : 'fits.sh') . ' at the above location!');
   }
   else {
-    $confirmation_message = '<img src="' . url('misc/watchdog-ok.png') . '"/>' . t('Found fits.sh at the above location!');
+    $confirmation_message = '<img src="' . url('misc/watchdog-ok.png') . '"/>' . t('Found ' . ((islandora_os_check() == "Windows") ? 'fits.bat' : 'fits.sh') . ' at the above location!');
   }
   return $confirmation_message;
 }
