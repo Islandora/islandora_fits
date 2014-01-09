@@ -84,7 +84,7 @@ function islandora_fits_path_check($fits_path) {
   $output = array();
   $return_value = '';
 
-  // Updated: slanger, 2013-11-08
+  // Updated: slangerx, 2013-11-08
   $command = 'stat ' . $fits_path;
 
   // Determine if the server is running Windows.
