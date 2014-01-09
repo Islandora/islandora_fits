@@ -84,7 +84,7 @@ function islandora_fits_path_check($fits_path) {
   $output = array();
   $return_value = '';
 
-  // Updated: slangerx, 2013-11-08
+  // Updated: slanger, 2013-11-08
   $command = 'stat ' . $fits_path;
 
   // Determine if the server is running Windows.
@@ -99,10 +99,10 @@ function islandora_fits_path_check($fits_path) {
   exec($command, $output, $return_value);
 
   if ($return_value !== 0) {
-    $confirmation_message = '<img src="' . url('misc/watchdog-error.png') . '"/>' . t('Unable to locate ' . ((islandora_os_check() == "Windows") ? 'fits.bat' : 'fits.sh') . ' at the above location!');
+    $confirmation_message = '<img src="' . url('misc/watchdog-error.png') . '"/>' . t('Unable to locate the FITS processing script at ' . $fits_path);
   }
   else {
-    $confirmation_message = '<img src="' . url('misc/watchdog-ok.png') . '"/>' . t('Found ' . ((islandora_os_check() == "Windows") ? 'fits.bat' : 'fits.sh') . ' at the above location!');
+    $confirmation_message = '<img src="' . url('misc/watchdog-ok.png') . '"/>' . t('FITS processing script found at ' . $fits_path);
   }
   return $confirmation_message;
 }
