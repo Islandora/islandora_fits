@@ -81,14 +81,14 @@ function islandora_fits_path_ajax($form, $form_state) {
  * Checks a fits path for the executable. 
  */
 function islandora_fits_path_check($fits_path) {
+  module_load_include('inc', 'islandora', 'includes/utilities');
   $output = array();
   $return_value = '';
 
-  // Updated: slangerx, 2013-11-08
   $command = 'stat ' . $fits_path;
 
-  // Determine if the server is running Windows.
-  if ((islandora_os_check() == "Windows") && (strpos($fits_path, ".sh") === FALSE)) {
+  // Determine if the server's operating system is Windows.
+  if ((islandora_deployed_on_windows()) && (strpos($fits_path, ".sh") === FALSE)) {
     // In Windows, $command returns the message: "'stat' is not recognized
     // as an internal or external command, operable program or batch file."
     // The updated $command (below) returns FITS version information, which
