@@ -97,10 +97,10 @@ function islandora_fits_path_check($fits_path) {
   exec($command, $output, $return_value);
 
   if ($return_value !== 0) {
-    $confirmation_message = '<img src="' . url('misc/watchdog-error.png') . '"/>' . t('Unable to locate the FITS processing script at @fitspath', array('@fitspath' => $fits_path));
+    $confirmation_message = '<img src="' . url('misc/watchdog-error.png') . '"/>' . t('Unable to locate the File Information Tool Set at @fitspath', array('@fitspath' => $fits_path));
   }
   else {
-    $confirmation_message = '<img src="' . url('misc/watchdog-ok.png') . '"/>' . t('FITS processing script found at @fitspath', array('@fitspath' => $fits_path));
+    $confirmation_message = '<img src="' . url('misc/watchdog-ok.png') . '"/>' . t('File Information Tool Set found at @fitspath', array('@fitspath' => $fits_path));
   }
   return $confirmation_message;
 }
