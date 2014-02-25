@@ -81,15 +81,26 @@ function islandora_fits_path_ajax($form, $form_state) {
  * Checks a fits path for the executable. 
  */
 function islandora_fits_path_check($fits_path) {
+  module_load_include('inc', 'islandora', 'includes/utilities');
   $output = array();
   $return_value = '';
-  exec('stat ' . $fits_path, $output, $return_value);
+
+  $command = 'stat ' . $fits_path;
+
+  // Ensure that this is a Windows server and that $fits_path isn't
+  // pointing to a shell script (that combo may cause the page to hang).
+  if ((islandora_deployed_on_windows()) && (strpos($fits_path, ".sh") === FALSE)) {
+    // Validate FITS by requesting version info instead.
+    $command = $fits_path . ' -v';
+  }
+
+  exec($command, $output, $return_value);
 
   if ($return_value !== 0) {
-    $confirmation_message = '<img src="' . url('misc/watchdog-error.png') . '"/>' . t('Unable to locate fits.sh at the above location!');
+    $confirmation_message = '<img src="' . url('misc/watchdog-error.png') . '"/>' . t('Unable to locate the File Information Tool Set at @fitspath', array('@fitspath' => $fits_path));
   }
   else {
-    $confirmation_message = '<img src="' . url('misc/watchdog-ok.png') . '"/>' . t('Found fits.sh at the above location!');
+    $confirmation_message = '<img src="' . url('misc/watchdog-ok.png') . '"/>' . t('File Information Tool Set found at @fitspath', array('@fitspath' => $fits_path));
   }
   return $confirmation_message;
 }
