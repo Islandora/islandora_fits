@@ -20,7 +20,7 @@
  *
  * @see hook_islandora_derivative()
  */
-function islandora_fits_create_techmd(AbstractObject $object, $force = FALSE, $hook) {
+function islandora_fits_create_techmd(AbstractObject $object, $force = FALSE, $hook = array()) {
   if ($force || !isset($object['TECHMD'])) {
     if (!isset($object[$hook['source_dsid']])) {
       return array(
