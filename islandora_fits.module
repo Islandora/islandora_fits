@@ -73,6 +73,23 @@ function islandora_fits_islandora_derivative() {
 }
 
 /**
+ * Implements hook_CMODEL_PID_islandora_derivative().
+ */
+function islandora_fits_ir_citationcmodel_islandora_derivative() {
+  return array(
+    array(
+      'source_dsid' => 'PDF',
+      'destination_dsid' => 'TECHMD',
+      'weight' => '0.01',
+      'function' => array(
+        'islandora_fits_create_techmd',
+      ),
+      'file' => drupal_get_path('module', 'islandora_fits') . '/includes/derivatives.inc',
+    ),
+  );
+}
+
+/**
  * Access callback for the FITS metadata display.
  */
 function islandora_fits_metadata_access($object) {
