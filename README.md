@@ -49,7 +49,7 @@ extraction.
 
 #### CONFIGURATION
 
-Navigate to http://yourhostname/#overlay=admin/islandora/fits.  Here you can
+Navigate to http://yourhostname/#overlay=admin/islandora/tools/fits.  Here you can
 specify the location of the fits script (on the file system) and the dsid you
 want to use for the technical metadata datastream.
 
