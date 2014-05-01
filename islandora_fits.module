@@ -12,7 +12,7 @@
  */
 function islandora_fits_menu() {
   $items = array();
-  $items['admin/islandora/fits'] = array(
+  $items['admin/islandora/tools/fits'] = array(
     'title' => 'FITS Tool',
     'description' => 'Configure the Islandora FITS extractor.',
     'page callback' => 'drupal_get_form',
@@ -64,6 +64,23 @@ function islandora_fits_islandora_derivative() {
       'source_dsid' => 'OBJ',
       'destination_dsid' => 'TECHMD',
       'weight' => '0',
+      'function' => array(
+        'islandora_fits_create_techmd',
+      ),
+      'file' => drupal_get_path('module', 'islandora_fits') . '/includes/derivatives.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_CMODEL_PID_islandora_derivative().
+ */
+function islandora_fits_ir_citationcmodel_islandora_derivative() {
+  return array(
+    array(
+      'source_dsid' => 'PDF',
+      'destination_dsid' => 'TECHMD',
+      'weight' => '0.01',
       'function' => array(
         'islandora_fits_create_techmd',
       ),

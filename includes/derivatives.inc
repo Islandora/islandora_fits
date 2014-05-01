@@ -12,21 +12,23 @@
  *   The object that will be used to generate/store the derivatives.
  * @param bool $force
  *   Whether derivative generation is being forced or not.
+ * @param array $hook
+ *   The derivative definition.
  *
  * @return array
  *   An array describing the outcome of the TECHMD creation.
  *
  * @see hook_islandora_derivative()
  */
-function islandora_fits_create_techmd(AbstractObject $object, $force = FALSE) {
+function islandora_fits_create_techmd(AbstractObject $object, $force = FALSE, $hook = array()) {
   if ($force || !isset($object['TECHMD'])) {
-    if (!isset($object["OBJ"])) {
+    if (!isset($object[$hook['source_dsid']])) {
       return array(
         'success' => FALSE,
         'messages' => array(
           array(
-            'message' => t('No OBJ datastream present for object @pid - technical metadata extraction was skipped.'),
-            'message_sub' => array('@pid' => $object->id),
+            'message' => t('No @source datastream present for object @pid - technical metadata extraction was skipped.'),
+            'message_sub' => array('@source' => $hook['source_dsid'], '@pid' => $object->id),
             'type' => 'watchdog',
             'severity' => WATCHDOG_ERROR,
           ),
@@ -34,10 +36,10 @@ function islandora_fits_create_techmd(AbstractObject $object, $force = FALSE) {
       );
     }
     $mime_detect = new MimeDetect();
-    $ext = $mime_detect->getExtension($object['OBJ']->mimeType);
+    $ext = $mime_detect->getExtension($object[$hook['source_dsid']]->mimeType);
     $file_name = str_replace(':', '-', $object->id);
-    $out_file = drupal_realpath("temporary://{$file_name}.OBJ.{$ext}");
-    $object['OBJ']->getContent($out_file);
+    $out_file = drupal_realpath("temporary://{$file_name}.{$hook['source_dsid']}.{$ext}");
+    $object[$hook['source_dsid']]->getContent($out_file);
 
     $fits_file = islandora_fits_create_fits($out_file);
     if ($fits_file === FALSE) {
@@ -164,7 +166,7 @@ function islandora_fits_add_datastream($object, $datastream_id, $file_uri) {
       'success' => TRUE,
       'messages' => array(
         array(
-          'message' => t('Created TECHMD derivative for OBJ (@pid).'),
+          'message' => t('Created TECHMD derivative for (@pid).'),
           'message_sub' => array(
             '@pid' => $object->id,
           ),
