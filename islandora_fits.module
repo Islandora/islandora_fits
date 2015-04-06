@@ -108,6 +108,7 @@ function template_preprocess_islandora_fits_metadata_display(array &$variables) 
   $object = $variables['islandora_object'];
   $techmd_ds = $object[variable_get('islandora_fits_techmd_dsid', 'TECHMD')]->content;
   $xml = new SimpleXMLElement($techmd_ds);
+  $xml->registerXPathNamespace('fits', 'http://hul.harvard.edu/ois/xml/ns/fits/fits_output');
   $fits_metadata = islandora_fits_child_xpath($xml);
   $headers = array(
     'label' => t('Field'),
@@ -187,7 +188,7 @@ function islandora_fits_metadata_display($object) {
  *   An array containing key/value pairs of fields and data.
  */
 function islandora_fits_child_xpath($xml) {
-  $results = $xml->xpath('/*/*');
+  $results = $xml->xpath('/*|/*/fits:metadata');
   $output = array();
   foreach ($results as $result) {
     islandora_fits_children($result, $output);
@@ -252,7 +253,16 @@ function islandora_fits_children($child, &$output) {
           }
           // No tool attribute.
           else {
-            $output['Unknown'][$field_label][] = $output_text;
+            if (isset($output['Unknown'][$field_label])) {
+              foreach ($output['Unknown'][$field_label] as $value) {
+                if ($value !== $output_text) {
+                  $output['Unknown'][$field_label][] = $output_text;
+                }
+              }
+            }
+            else {
+              $output['Unknown'][$field_label][] = $output_text;
+            }
           }
         }
       }
