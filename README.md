@@ -51,6 +51,8 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 Set the path for `fits.sh` and create a name for the Technical metadata stream ID in Administration » Islandora » Islandora Utility Modules » FITS Tool (admin/islandora/tools/fits).
 
+![image](https://cloud.githubusercontent.com/assets/2371345/9691525/4a2591f6-5319-11e5-9949-522100689641.png)
+
 ## Documentation
 
 Further documentation for this module is available at [our wiki](https://wiki.duraspace.org/display/ISLANDORA/Islandora+FITS).
