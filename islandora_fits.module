@@ -240,10 +240,8 @@ function islandora_fits_children($child, &$output) {
                 $output[$tool_label][$field_label][] = $output_text;
               }
               else {
-                foreach ($output[$tool_label][$field_label] as $key => $value) {
-                  if ($value !== $output_text) {
-                    $output[$tool_label][$field_label][] = $output_text;
-                  }
+                if (!in_array($output_text, $output[$tool_label][$field_label])) {
+                  $output[$tool_label][$field_label][] = $output_text;
                 }
               }
             }
@@ -254,10 +252,8 @@ function islandora_fits_children($child, &$output) {
           // No tool attribute.
           else {
             if (isset($output['Unknown'][$field_label])) {
-              foreach ($output['Unknown'][$field_label] as $value) {
-                if ($value !== $output_text) {
-                  $output['Unknown'][$field_label][] = $output_text;
-                }
+              if (!in_array($output_text, $output['Unknown'][$field_label])) {
+                $output['Unknown'][$field_label][] = $output_text;
               }
             }
             else {
