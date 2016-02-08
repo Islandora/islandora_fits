@@ -62,7 +62,7 @@ function islandora_fits_islandora_derivative() {
   return array(
     array(
       'source_dsid' => 'OBJ',
-      'destination_dsid' => 'TECHMD',
+      'destination_dsid' => variable_get('islandora_fits_techmd_dsid', 'TECHMD'),
       'weight' => '0',
       'function' => array(
         'islandora_fits_create_techmd',
@@ -79,7 +79,7 @@ function islandora_fits_ir_citationcmodel_islandora_derivative() {
   return array(
     array(
       'source_dsid' => 'PDF',
-      'destination_dsid' => 'TECHMD',
+      'destination_dsid' => variable_get('islandora_fits_techmd_dsid', 'TECHMD'),
       'weight' => '0.01',
       'function' => array(
         'islandora_fits_create_techmd',
