@@ -77,7 +77,7 @@ A. Some images and audio files will cause problems during metadata extraction. T
 
 Current maintainers:
 
-* [Nick Ruest](https://github.com/maintainer_ruebot)
+* Maintainer needed
 
 ## Development
 
