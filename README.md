@@ -77,6 +77,7 @@ A. Some images and audio files will cause problems during metadata extraction. T
 
 Current maintainers:
 
+* Maintainer needed
 
 ## Development
 
