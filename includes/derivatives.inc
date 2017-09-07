@@ -21,6 +21,18 @@
  * @see hook_islandora_derivative()
  */
 function islandora_fits_create_techmd(AbstractObject $object, $force = FALSE, $hook = array()) {
+  if (!variable_get('islandora_fits_do_derivatives', TRUE)) {
+    return array(
+      'success' => TRUE,
+      'messages' => array(
+        array(
+          'message' => t('Islandora FITS derivatives disabled: Technical metadata extraction skipped.'),
+          'type' => 'watchdog',
+          'severity' => WATCHDOG_NOTICE,
+        ),
+      ),
+    );
+  }
   $techmd_dsid = variable_get('islandora_fits_techmd_dsid', 'TECHMD');
   if ($force || !isset($object[$techmd_dsid])) {
     if (!isset($object[$hook['source_dsid']])) {
