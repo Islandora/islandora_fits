@@ -77,7 +77,7 @@ A. Some images and audio files will cause problems during metadata extraction. T
 
 Current maintainers:
 
-* [Nelson Hart](https://github.com/nhart)
+* [Mark Jordan](https://github.com/mjordan)
 
 ## Development
 
