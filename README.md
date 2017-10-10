@@ -59,6 +59,8 @@ Further documentation for this module is available at [our wiki](https://wiki.du
 
 ## Troubleshooting/Issues
 
+A [known issue](https://jira.duraspace.org/browse/ISLANDORA-2057) with the FITS module can cause a memory leak as of version 7.x-1.10.
+
 * [Islandora Group](https://groups.google.com/forum/?hl=en&fromgroups#!forum/islandora)
 * [Islandora Dev Group](https://groups.google.com/forum/?hl=en&fromgroups#!forum/islandora-dev)
 
