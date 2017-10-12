@@ -93,12 +93,7 @@ function islandora_fits_ir_citationcmodel_islandora_derivative() {
  * Access callback for the FITS metadata display.
  */
 function islandora_fits_metadata_access($object) {
-  if ($object[variable_get('islandora_fits_techmd_dsid', 'TECHMD')] && user_access('view technical metadata')) {
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  }
+  return islandora_datastream_access('view technical metadata', $object[variable_get('islandora_fits_techmd_dsid', 'TECHMD')]);
 }
 
 /**
