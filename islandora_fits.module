@@ -61,15 +61,15 @@ function islandora_fits_theme() {
 function islandora_fits_islandora_derivative() {
   $derivatives = array();
   if (variable_get('islandora_fits_do_derivatives', TRUE)) {
-      $derivatives[] = array(
-        'source_dsid' => 'OBJ',
-        'destination_dsid' => variable_get('islandora_fits_techmd_dsid', 'TECHMD'),
-        'weight' => '0',
-        'function' => array(
-          'islandora_fits_create_techmd',
-        ),
-        'file' => drupal_get_path('module', 'islandora_fits') . '/includes/derivatives.inc',
-      );
+    $derivatives[] = array(
+      'source_dsid' => 'OBJ',
+      'destination_dsid' => variable_get('islandora_fits_techmd_dsid', 'TECHMD'),
+      'weight' => '0',
+      'function' => array(
+        'islandora_fits_create_techmd',
+      ),
+      'file' => drupal_get_path('module', 'islandora_fits') . '/includes/derivatives.inc',
+    );
   }
   return $derivatives;
 }

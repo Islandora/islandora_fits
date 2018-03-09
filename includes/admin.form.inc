@@ -98,7 +98,7 @@ function islandora_fits_admin_submit_form($form, &$form_state) {
   }
   // Conditionally set the FITS executable path.
   if ($form_state['values']['islandora_fits_do_derivatives']) {
-    variable_set('islandora_fits_executable_path',$form_state['values']['islandora_fits_executable_path']);
+    variable_set('islandora_fits_executable_path', $form_state['values']['islandora_fits_executable_path']);
   }
   drupal_set_message(t('The settings have been updated!'));
 }
@@ -119,7 +119,7 @@ function islandora_fits_get_path_message($fits_path) {
     $confirmation_message = '<img src="' . url('misc/watchdog-ok.png') . '"/> ' . t('Executable found at @fitspath', array('@fitspath' => $fits_path));
   }
   else {
-    $confirmation_message = '<img src="' . url('misc/watchdog-error.png') . '"/> ' . join('<br/>', $errors);
+    $confirmation_message = '<img src="' . url('misc/watchdog-error.png') . '"/> ' . implode('<br/>', $errors);
   }
   return $confirmation_message;
 }
